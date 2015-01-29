@@ -20,7 +20,8 @@
 *.so.*
 *.dylib
 
-# Executables
+# Executablesa
+bin/*
 *.exe
 *.out
 *.app

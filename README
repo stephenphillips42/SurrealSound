@@ -1,1 +1,69 @@
-# SurrealSound
+# Project 1
+
+Part 1
+
+The output of the "write" program was:
+> /usr/bin/time --verbose bin/write
+	Command being timed: "bin/write"
+	User time (seconds): 0.00
+	System time (seconds): 0.03
+	Percent of CPU this job got: 95%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:00.04
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 396
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 141
+	Voluntary context switches: 5
+	Involuntary context switches: 3
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 104
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+
+The output of the "fprintf" program was:
+> /usr/bin/time --verbose bin/print
+	Command being timed: "bin/print"
+	User time (seconds): 0.01
+	System time (seconds): 0.00
+	Percent of CPU this job got: 67%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:00.02
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 488
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 172
+	Voluntary context switches: 14
+	Involuntary context switches: 14
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 784
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+
+So using a write buffer we did things in 20 milliseconds instead of 40
+milliseconds. We also used significantly less CPU (67% as opposed to
+93%). The number of context switches in the fprintf program was much
+larger than the number in the write program (14 vs 3).
+
+
+Part 2
+
+
+
+
+
+
