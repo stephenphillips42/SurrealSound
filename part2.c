@@ -18,6 +18,12 @@ struct timespec g_timestart;
 struct timespec g_syscall_time;
 struct timespec g_stdlib_time;
 
+// Function declarations
+void * syscall_writer(void *);
+void * stdlib_writer(void *);
+
+
+
 /* syscall_writer.c ‐ write 50,000 characters with write*/
 void * syscall_writer(void * arg)
 {
@@ -84,6 +90,14 @@ int main()
   // Join the threads  
   pthread_join(thread_id1,NULL);
   pthread_join(thread_id2,NULL);
+
+  printf("The syscall_writer thread finished in time %ld.%.9ld seconds\n",
+	 (long)(g_syscall_time.tv_sec - g_timestart.tv_sec),
+         (long)(g_syscall_time.tv_nsec - g_timestart.tv_nsec));
+
+  printf("The stdlib_writer thread finished in time %ld.%.9ld seconds\n",
+	 (long)(g_stdlib_time.tv_sec - g_timestart.tv_sec),
+         (long)(g_stdlib_time.tv_nsec - g_timestart.tv_nsec));
 
   return 0;
 }
