@@ -3,71 +3,64 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/wait.h>
 #include <fcntl.h>
-// pthreads library
-#include <pthread.h>
 
 
-#define STDLIB_OUTPUT_NAME "fprint.out"
-#define SYSCALL_OUTPUT_NAME "write.out"
-
-/* syscall_writer.c ‐ write 50,000 characters with write*/
-void * syscall_writer(void * arg)
-{
-  (void)(arg);
-  long i;
-  int fd;
-  if ((fd=open(SYSCALL_OUTPUT_NAME,O_WRONLY|O_CREAT,0644)) < 0) {
-    fprintf(stderr,"Can't open %s. Bye.\n",SYSCALL_OUTPUT_NAME);
-    exit(1);
-  }
-  for (i=0; i<50000; i++) { /* write 50,000 Ys with write */
-    if (write(fd,"Y",1) < 1) {
-      fprintf(stderr,"Can't write. Bye\n");
-      exit(1);
-    }
-  }
-  close(fd);
-  printf("Finished syscall_writer\n");
-
-  return 0;
-}
-
-/* stdlibrary_writer.c ‐ write 400,000 characters with fprintf */
-void * stdlib_writer(void * arg)
-{
-  (void)(arg);
-  long i;
-  FILE *fp;
-  if ((fp=fopen(STDLIB_OUTPUT_NAME,"w")) == NULL) {
-    fprintf(stderr,"Can't open %s. Bye.\n",STDLIB_OUTPUT_NAME);
-    exit(1);
-  }
-  for (i=0; i<400000; i++) { /* write 400,000 Xs with fprintf */
-    if (fprintf(fp,"X") < 1) {
-      fprintf(stderr,"Can't write. Bye\n");
-      exit(1);
-    }
-  }
-  fclose(fp);
-  printf("Finished stdlib_writer\n");
-
-  return 0;
-}
-
-// Main function to run the threads
+// Main function to fork the processes
 int main()
 {
-  pthread_t thread_id1;
-  pthread_t thread_id2;
+  pid_t pid1, pid2, childpid;
 
-  // Create the threads
-  pthread_create(&thread_id1,NULL,syscall_writer,NULL);
-  pthread_create(&thread_id2,NULL,stdlib_writer,NULL);
+  // Parameterss for execv calls
+  char *const emptyparams[] = {NULL};
+  //char *const params1[] = {"./bin/syscall_writer", NULL};
+  //char *const params2[] = {"--verbose", "./bin/stdlibrary_writer", NULL};
 
-  // Join the threads
-  pthread_join(thread_id1,NULL);
-  pthread_join(thread_id2,NULL);
+  // Create the child processes for syscall_writer
+  printf("Creating children processes...\n");
+  pid1 = fork();
+  if (pid1 == 0) {
+    execv("./bin/syscall_writer",emptyparams);
+  }
+  else if(pid1 < 0) {
+    fprintf(stderr,"Error making child for syscall_writer\n");
+    exit(1);
+  }
+
+  // Second child - for stdlib_writer
+  pid2 = fork();
+  if(pid2 == 0) {
+    execv("./bin/stdlibrary_writer",emptyparams);
+  }
+  else if(pid2 < 0) {
+    fprintf(stderr,"Error making child for stdlib_writer\n");
+    exit(1);
+  }
+
+  // Wait for the processes to finish 
+  printf("Waiting for the children to finish...\n");
+  childpid = wait(NULL);
+  if(childpid == pid1) {
+    printf("The syscall_writer process finished first\n");
+  }
+  else if(childpid == pid2) {
+    printf("The stdlib_writer process finished first\n");
+  }
+  else {
+    fprintf(stderr,"Error occured waiting for the child\n");
+  }
+  // Wait for the other child
+  childpid = wait(NULL);
+  if(childpid == pid1) {
+    printf("The syscall_writer process finished last\n");
+  }
+  else if(childpid == pid2) {
+    printf("The stdlib_writer process finished last\n");
+  }
+  else {
+    fprintf(stderr,"Error occured waiting for the child\n");
+  }
 
   return 0;
 }

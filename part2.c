@@ -6,10 +6,17 @@
 #include <fcntl.h>
 // pthreads library
 #include <pthread.h>
+// Timing library (thanks piazza)
+#include <time.h>
 
-
+// Output files
 #define STDLIB_OUTPUT_NAME "fprint.out"
 #define SYSCALL_OUTPUT_NAME "write.out"
+
+// Output times
+struct timespec g_timestart;
+struct timespec g_syscall_time;
+struct timespec g_stdlib_time;
 
 /* syscall_writer.c ‐ write 50,000 characters with write*/
 void * syscall_writer(void * arg)
@@ -28,8 +35,10 @@ void * syscall_writer(void * arg)
     }
   }
   close(fd);
+  // Getting finish time for later output
+  clock_gettime(CLOCK_MONOTONIC, &g_syscall_time);
+  // Report completion the old fashioned way
   printf("Finished syscall_writer\n");
-
   return 0;
 }
 
@@ -50,7 +59,11 @@ void * stdlib_writer(void * arg)
     }
   }
   fclose(fp);
+  // Getting finish time for later output
+  clock_gettime(CLOCK_MONOTONIC, &g_stdlib_time);
+  // Report completion the old fashioned way
   printf("Finished stdlib_writer\n");
+
 
   return 0;
 }
@@ -61,11 +74,14 @@ int main()
   pthread_t thread_id1;
   pthread_t thread_id2;
 
+  // Setup start time                                                                                                                                                                                                                       
+  clock_gettime(CLOCK_MONOTONIC, &g_timestart);
+
   // Create the threads
   pthread_create(&thread_id1,NULL,syscall_writer,NULL);
   pthread_create(&thread_id2,NULL,stdlib_writer,NULL);
 
-  // Join the threads
+  // Join the threads  
   pthread_join(thread_id1,NULL);
   pthread_join(thread_id2,NULL);
 

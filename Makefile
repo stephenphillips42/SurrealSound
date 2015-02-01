@@ -1,8 +1,7 @@
 CC=gcc
 CFLAGS=-pthread -Wall
 
-all: part1
-# part2 part3
+all: part1 part2 part3
 
 part1: 
 	$(CC) syscall_writer.c -o bin/syscall_writer
@@ -10,14 +9,9 @@ part1:
 
 part2:
 	$(CC) $(CFLAGS) part2.c -o bin/part2
-#main.o: main.cpp
-#	$(CC) $(CFLAGS) main.cpp
 
-#factorial.o: factorial.cpp
-#	$(CC) $(CFLAGS) factorial.cpp
-
-#hello.o: hello.cpp
-#	$(CC) $(CFLAGS) hello.cpp
+part3:
+	$(CC) $(CFLAGS) part3.c -o bin/part3
 
 clean:
-	rm -rf *o hello
+	rm -rf bin/* *out
