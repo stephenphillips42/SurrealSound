@@ -1,69 +1,208 @@
+##############################################################
 # Project 1
+##############################################################
 
-Part 1
+###############################
+# Part 1
+###############################
 
-The output of the "write" program was:
-> /usr/bin/time --verbose bin/write
-	Command being timed: "bin/write"
-	User time (seconds): 0.00
-	System time (seconds): 0.03
-	Percent of CPU this job got: 95%
-	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:00.04
-	Average shared text size (kbytes): 0
-	Average unshared data size (kbytes): 0
-	Average stack size (kbytes): 0
-	Average total size (kbytes): 0
-	Maximum resident set size (kbytes): 396
-	Average resident set size (kbytes): 0
-	Major (requiring I/O) page faults: 0
-	Minor (reclaiming a frame) page faults: 141
-	Voluntary context switches: 5
-	Involuntary context switches: 3
-	Swaps: 0
-	File system inputs: 0
-	File system outputs: 104
-	Socket messages sent: 0
-	Socket messages received: 0
-	Signals delivered: 0
-	Page size (bytes): 4096
-	Exit status: 0
+To figure out the timing I wrote a shell script, I wrote a very simple shell script to repeat the 
+execution system call and standard library programs. I made the output of /usr/bin/time use a 
+format of my choosing to see what I thought was the most relevant information
 
-The output of the "fprintf" program was:
-> /usr/bin/time --verbose bin/print
-	Command being timed: "bin/print"
-	User time (seconds): 0.01
-	System time (seconds): 0.00
-	Percent of CPU this job got: 67%
-	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:00.02
-	Average shared text size (kbytes): 0
-	Average unshared data size (kbytes): 0
-	Average stack size (kbytes): 0
-	Average total size (kbytes): 0
-	Maximum resident set size (kbytes): 488
-	Average resident set size (kbytes): 0
-	Major (requiring I/O) page faults: 0
-	Minor (reclaiming a frame) page faults: 172
-	Voluntary context switches: 14
-	Involuntary context switches: 14
-	Swaps: 0
-	File system inputs: 0
-	File system outputs: 784
-	Socket messages sent: 0
-	Socket messages received: 0
-	Signals delivered: 0
-	Page size (bytes): 4096
-	Exit status: 0
-
-So using a write buffer we did things in 20 milliseconds instead of 40
-milliseconds. We also used significantly less CPU (67% as opposed to
-93%). The number of context switches in the fprintf program was much
-larger than the number in the write program (14 vs 3).
+> ./part1timing.sh
+Timing the system call writer ...
+0.04 time elapsed, with 95% CPU. 6 involuntary context-switches, 6 voluntary context switches (I/O)
+0.03 time elapsed, with 94% CPU. 3 involuntary context-switches, 4 voluntary context switches (I/O)
+0.03 time elapsed, with 93% CPU. 3 involuntary context-switches, 4 voluntary context switches (I/O)
+0.02 time elapsed, with 92% CPU. 3 involuntary context-switches, 4 voluntary context switches (I/O)
+0.02 time elapsed, with 96% CPU. 3 involuntary context-switches, 4 voluntary context switches (I/O)
+0.02 time elapsed, with 95% CPU. 3 involuntary context-switches, 5 voluntary context switches (I/O)
+0.02 time elapsed, with 95% CPU. 3 involuntary context-switches, 4 voluntary context switches (I/O)
+0.02 time elapsed, with 91% CPU. 3 involuntary context-switches, 4 voluntary context switches (I/O)
+0.02 time elapsed, with 95% CPU. 4 involuntary context-switches, 4 voluntary context switches (I/O)
+0.02 time elapsed, with 95% CPU. 3 involuntary context-switches, 5 voluntary context switches (I/O)
+Timing the standard library writer ...
+0.01 time elapsed, with 62% CPU. 15 involuntary context-switches, 17 voluntary context switches (I/O)
+0.01 time elapsed, with 62% CPU. 14 involuntary context-switches, 15 voluntary context switches (I/O)
+0.01 time elapsed, with 66% CPU. 14 involuntary context-switches, 19 voluntary context switches (I/O)
+0.01 time elapsed, with 66% CPU. 14 involuntary context-switches, 24 voluntary context switches (I/O)
+0.01 time elapsed, with 60% CPU. 14 involuntary context-switches, 25 voluntary context switches (I/O)
+0.01 time elapsed, with 60% CPU. 14 involuntary context-switches, 26 voluntary context switches (I/O)
+0.01 time elapsed, with 60% CPU. 14 involuntary context-switches, 26 voluntary context switches (I/O)
+0.01 time elapsed, with 60% CPU. 14 involuntary context-switches, 26 voluntary context switches (I/O)
+0.01 time elapsed, with 60% CPU. 14 involuntary context-switches, 26 voluntary context switches (I/O)
+0.01 time elapsed, with 60% CPU. 14 involuntary context-switches, 25 voluntary context switches (I/O)
+Finished
 
 
-Part 2
+So using a write buffer we did things in 10 milliseconds instead of 20-40 milliseconds. We also
+used significantly less CPU (62% as opposed to 93%). The number of voluntary context switches in
+the fprintf program was much larger than the number in the write program (~20 vs ~5). Since the
+standard library writer was consistently faster, this shows it is the better implementation. It
+did its job.
+
+Each run had some variation in time, though the standard library program was too fast to see
+variation. The times generally went down, maybe due to Operating system cacheing effects,
+also just the general timing of context switches.
+
+###############################
+# Part 2
+###############################
+
+After implementing the pthreads to run the syscall and stdlib threads in the same process, 
+I compared their results. I made them output when they finished. As shown below, the 
+stdlib thread finished first consistently. This was when the syscall thread was started
+first.
+
+> ./bin/part2 
+Finished stdlib_writer
+Finished syscall_writer
+The syscall_writer thread finished in time 0.044041059 seconds
+The stdlib_writer thread finished in time 0.031676541 seconds
+> ./bin/part2 
+Finished stdlib_writer
+Finished syscall_writer
+The syscall_writer thread finished in time 0.045293593 seconds
+The stdlib_writer thread finished in time 0.032907848 seconds
+> ./bin/part2 
+Finished stdlib_writer
+Finished syscall_writer
+The syscall_writer thread finished in time 0.037980222 seconds
+The stdlib_writer thread finished in time 0.028065702 seconds
+> ./bin/part2 
+Finished stdlib_writer
+Finished syscall_writer
+The syscall_writer thread finished in time 0.042856943 seconds
+The stdlib_writer thread finished in time 0.031505112 seconds
+> ./bin/part2 
+Finished stdlib_writer
+Finished syscall_writer
+The syscall_writer thread finished in time 0.037991218 seconds
+The stdlib_writer thread finished in time 0.027968798 seconds
+
+Even switching the order of the threads did not make a difference.
+
+> ./bin/part2 
+Finished stdlib_writer
+Finished syscall_writer
+The syscall_writer thread finished in time 0.040798416 seconds
+The stdlib_writer thread finished in time 0.027864779 seconds
+> ./bin/part2 
+Finished stdlib_writer
+Finished syscall_writer
+The syscall_writer thread finished in time 0.033553976 seconds
+The stdlib_writer thread finished in time 0.024846775 seconds
+> ./bin/part2 
+Finished stdlib_writer
+Finished syscall_writer
+The syscall_writer thread finished in time 0.043274980 seconds
+The stdlib_writer thread finished in time 0.030333388 seconds
+> ./bin/part2 
+Finished stdlib_writer
+Finished syscall_writer
+The syscall_writer thread finished in time 0.041415630 seconds
+The stdlib_writer thread finished in time 0.030030596 seconds
 
 
+One would not expect this to change much, because even though the switches between
+threads happen differently each time you run the program, the stdlib thread is
+faster than the syscall writer (as shown in part 1). Though it is slower than 
+it would be running on its own because it has to interleave with the syscall thread
+it still is faster because it doesn't make as many system calls.
+
+On the operation of the code, basically you call the pthread library, and give
+the pthread_create method a function pointer. In this case, we basically renamed
+the main functions of the two programs given to use before and put those in two
+threads. Then we just joined the threads. Each thread recorded the time it finished
+to see which was done first.
+
+###############################
+# Part 3
+###############################
+
+This was similar to part 2, in that we consistently saw that the stdlib process
+finish before the syscall process. To help assist with the timing I made a variation
+of the part3 program to run /usr/bin/time on the program.
+
+> ./bin/part3 
+Creating children processes...
+Waiting for the children to finish...
+0.02 time elapsed, with 73% CPU. 14 involuntary context-switches, 27 voluntary context switches (I/O)
+The stdlib_writer process finished first
+0.04 time elapsed, with 92% CPU. 16 involuntary context-switches, 6 voluntary context switches (I/O)
+The syscall_writer process finished last
+> ./bin/part3 
+Creating children processes...
+Waiting for the children to finish...
+0.02 time elapsed, with 72% CPU. 14 involuntary context-switches, 21 voluntary context switches (I/O)
+The stdlib_writer process finished first
+0.03 time elapsed, with 94% CPU. 15 involuntary context-switches, 5 voluntary context switches (I/O)
+The syscall_writer process finished last
+> ./bin/part3 
+Creating children processes...
+Waiting for the children to finish...
+0.02 time elapsed, with 76% CPU. 14 involuntary context-switches, 15 voluntary context switches (I/O)
+The stdlib_writer process finished first
+0.04 time elapsed, with 95% CPU. 6 involuntary context-switches, 5 voluntary context switches (I/O)
+The syscall_writer process finished last
+> ./bin/part3 
+Creating children processes...
+Waiting for the children to finish...
+0.02 time elapsed, with 73% CPU. 14 involuntary context-switches, 16 voluntary context switches (I/O)
+The stdlib_writer process finished first
+0.04 time elapsed, with 92% CPU. 13 involuntary context-switches, 7 voluntary context switches (I/O)
+The syscall_writer process finished last
 
 
+This didn't change if you swapped the process order.
+
+> ./bin/part3 
+Creating children processes...
+Waiting for the children to finish...
+0.02 time elapsed, with 68% CPU. 14 involuntary context-switches, 18 voluntary context switches (I/O)
+The stdlib_writer process finished first
+0.04 time elapsed, with 92% CPU. 3 involuntary context-switches, 6 voluntary context switches (I/O)
+The syscall_writer process finished last
+> ./bin/part3 
+Creating children processes...
+Waiting for the children to finish...
+0.02 time elapsed, with 70% CPU. 14 involuntary context-switches, 15 voluntary context switches (I/O)
+The stdlib_writer process finished first
+0.04 time elapsed, with 92% CPU. 16 involuntary context-switches, 5 voluntary context switches (I/O)
+The syscall_writer process finished last
+> ./bin/part3 
+Creating children processes...
+Waiting for the children to finish...
+0.02 time elapsed, with 72% CPU. 14 involuntary context-switches, 16 voluntary context switches (I/O)
+The stdlib_writer process finished first
+0.03 time elapsed, with 91% CPU. 3 involuntary context-switches, 8 voluntary context switches (I/O)
+The syscall_writer process finished last
+> ./bin/part3 
+Creating children processes...
+Waiting for the children to finish...
+0.02 time elapsed, with 70% CPU. 14 involuntary context-switches, 13 voluntary context switches (I/O)
+The stdlib_writer process finished first
+0.04 time elapsed, with 95% CPU. 13 involuntary context-switches, 6 voluntary context switches (I/O)
+The syscall_writer process finished last
+
+
+Note that the normal output of the program doesn't use /usr/bin/time and looks like this:
+
+> ./bin/part3
+Creating children processes...
+Waiting for the children to finish...
+The stdlib_writer process finished first
+The syscall_writer process finished last
+
+For the regular program, we used the fork library. We called fork twice, and recorded the
+process id. We waited for the child process to finish, and checked which process id finished
+first. Basically we used the executables generated from part 1 to call execv. In the timing case
+we simply changed the execv's to use /usr/bin/time on the executables instead of the original
+executables. The details on the timing are in the comments.
+
+
+Either way, the exact timing of the programs changes from run to run, but overall the standard
+library program always finishes faster regradless of the situation - timing, threads or processes.
 
 
