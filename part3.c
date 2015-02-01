@@ -13,15 +13,16 @@ int main()
   pid_t pid1, pid2, childpid;
 
   // Parameterss for execv calls
-  char *const emptyparams[] = {NULL};
-  //char *const params1[] = {"./bin/syscall_writer", NULL};
+  //char *const emptyparams[] = {NULL};
+  char *const params1[] = {"/usr/bin/time","-f","\%e time elapsed, with \%P CPU. \%c involuntary context-switches, \%w voluntary context switches (I/O)","./bin/syscall_writer", NULL};
+  char *const params2[] = {"/usr/bin/time","-f","\%e time elapsed, with \%P CPU. \%c involuntary context-switches, \%w voluntary context switches (I/O)","./bin/stdlibrary_writer", NULL};
   //char *const params2[] = {"--verbose", "./bin/stdlibrary_writer", NULL};
 
   // Create the child processes for syscall_writer
   printf("Creating children processes...\n");
   pid1 = fork();
   if (pid1 == 0) {
-    execv("./bin/syscall_writer",emptyparams);
+    execv("/usr/bin/time",params1);
   }
   else if(pid1 < 0) {
     fprintf(stderr,"Error making child for syscall_writer\n");
@@ -31,7 +32,7 @@ int main()
   // Second child - for stdlib_writer
   pid2 = fork();
   if(pid2 == 0) {
-    execv("./bin/stdlibrary_writer",emptyparams);
+    execv("/usr/bin/time",params2);
   }
   else if(pid2 < 0) {
     fprintf(stderr,"Error making child for stdlib_writer\n");
