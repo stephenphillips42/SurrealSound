@@ -3,6 +3,13 @@
 ##############################################################
 
 ###############################
+# Compiling & Logistics
+###############################
+Run make. It should work. The empty file in the bin directory is just to make sure that the
+executables go somewhere - otherwise it is just an empty file.
+
+
+###############################
 # Part 1
 ###############################
 
@@ -111,6 +118,11 @@ faster than the syscall writer (as shown in part 1). Though it is slower than
 it would be running on its own because it has to interleave with the syscall thread
 it still is faster because it doesn't make as many system calls.
 
+There is variation in the exact timing of the execution though, because of similar
+reasons to part 1. This time there was more unpredictable switches due to the
+threads switching between execution frames. So thought the order was consistent,
+the exact timing was not.
+
 On the operation of the code, basically you call the pthread library, and give
 the pthread_create method a function pointer. In this case, we basically renamed
 the main functions of the two programs given to use before and put those in two
@@ -201,8 +213,9 @@ first. Basically we used the executables generated from part 1 to call execv. In
 we simply changed the execv's to use /usr/bin/time on the executables instead of the original
 executables. The details on the timing are in the comments.
 
-
-Either way, the exact timing of the programs changes from run to run, but overall the standard
-library program always finishes faster regradless of the situation - timing, threads or processes.
+Either way, the exact timing of the programs changes from run to run, due to switching between
+the processes. This is basically the same as switching between threads though with more
+overhead due to larger context-switching by the OS. But overall the standard library program
+always finishes faster regradless of the situation - timing, threads or processes.
 
 
