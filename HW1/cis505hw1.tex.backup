@@ -31,9 +31,10 @@ If the pseudo-code is as follows:
  end function
 \end{lstlisting}
 
-Then a pass by reference for \textit{incr(i,i)} would increment \textit{i} twice. %Not sure of the following sentence ....
-On pass by copy/restore it should do the same. The reference given to the function will be the same for both \textit{i} and \textit{j} so it will increment twice
-
+Then a pass by reference for \textit{incr(i,i)} would increment \textit{i} twice giving it a final
+value of \textit{i} + 2. %Not sure of the following sentence ....
+On pass by copy/restore it will not do the same. The reference to \textit{i} will be aliased, so it will set the value of \textit{i} to 
+\textit{i} + 1 twice, giving it the final value of \textit{i} + 1. In other words, pass by copy/restore has aliasing issues.
 
 \subsection*{Problem 2}
 The dependency graph of the processes is as follows:
@@ -164,7 +165,7 @@ V(S3)
 P(S2)
 P(S3)
 // Process 4 code ...
-V(S1)
+V(S2)
 V(S3) // For P5
 \end{lstlisting}
 &
@@ -172,12 +173,19 @@ V(S3) // For P5
 P(S2)
 P(S3)
 // Process 5 code ...
-V(S1)
+V(S2)
 V(S3) // For P4
 \end{lstlisting} \\\hline
 
 \end{tabular}
 \end{table}
+
+This does not have any deadlocks. There are some race conditions, meaning the order in which P2 and P3 run or P4 and P5 run is dependent on which
+happens to get the lock first which can vary from run to run. This is fine though, since we did not want to enforce any order on P2/P3 or P4/P5,
+but they still must execute after P1 and P2/P3, respectively. The idea of the code is that first everything is locked (initialized to zero), and
+then P1 unlocks the first semaphore. P2 or P3 then get the lock, execute their code, relinquish the lock, then each of P2 and P3 relinquish locks
+they own. P4 and P5 need to grab both P2 and P3's locks before executing, after which they relinquish those locks so the other can run. As the 
+order in which P2/P3 and P4/P5 get and release their locks is fixed, they cannot deadlock.
 
 \subsubsection*{Part b}
 Here we are allowed to use general counting semaphores. So we do the following:
@@ -228,7 +236,8 @@ P(S3)
 \end{tabular}
 \end{table}
 
-
+The idea is the same as the previous, except now each process can have in some sense multiple locks using one semaphore.
+Therefore this code can run more concurrently than the last one. This still does not allow deadlock, as there are no competing resources now that we have counting semaphores.
 
 \subsection*{Problem 4}
 \subsubsection*{Part a}
@@ -271,7 +280,9 @@ forever
  \end{lstlisting}
  
  This prevents deadlock by not allowing everyone to pick up the left fork at the same time. Suppose this did not prevent deadlock, then there must be some fork, say \textit{i} 
- that is locked forever. 
+ that is locked forever. Then the philosopher using that must be waiting for a fork, \textit{j}, which must be great than \textit{i}. Keep going along the chain and eventually
+ you must, since this is deadlocked, get back to \textit{i}, which means \textit{i} $>$ \textit{i}, which is nonsense. So we must have that this prevents deadlock. This is not very
+ efficient, and there are more efficient solutions but this is the simplest (in my mind) that prevents deadlock. 
  
 \end{figure}
 

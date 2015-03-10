@@ -6,6 +6,7 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{float}
 \usepackage{listings}
 \usepackage{tikz}
 \usetikzlibrary{arrows}
@@ -31,13 +32,14 @@ If the pseudo-code is as follows:
  end function
 \end{lstlisting}
 
-Then a pass by reference for \textit{incr(i,i)} would increment \textit{i} twice. %Not sure of the following sentence ....
-On pass by copy/restore it should do the same. The reference given to the function will be the same for both \textit{i} and \textit{j} so it will increment twice
-
+Then a pass by reference for \textit{incr(i,i)} would increment \textit{i} twice giving it a final
+value of \textit{i} + 2. %Not sure of the following sentence ....
+On pass by copy/restore it will not do the same. The reference to \textit{i} will be aliased, so it will set the value of \textit{i} to 
+\textit{i} + 1 twice, giving it the final value of \textit{i} + 1. In other words, pass by copy/restore has aliasing issues.
 
 \subsection*{Problem 2}
 The dependency graph of the processes is as follows:
-\begin{figure}[h!]
+\begin{figure}[H]
 \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2cm,
   thick,main node/.style={circle,draw,font=\sffamily\Large\bfseries}]
 
@@ -57,7 +59,7 @@ The dependency graph of the processes is as follows:
 \end{figure}
 
 So we run the following code:
-\begin{table}[h!]
+\begin{table}[H]
 \begin{tabular}{|c|c|c|}
 \hline
 \textbf{Initialize Semaphores} & \textbf{Process 1} & \textbf{Process 2}  \\
@@ -107,7 +109,7 @@ P(S3)
 \subsection*{Problem 3}
 The dependency graph of the processes is as follows:
 
-\begin{figure}[h!]
+\begin{figure}[H]
 \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2cm,
   thick,main node/.style={circle,draw,font=\sffamily\Large\bfseries}]
 
@@ -129,7 +131,7 @@ The dependency graph of the processes is as follows:
 
 \subsubsection*{Part a}
 Here we are allowed to only use binary semaphores. So we do the following:
-\begin{table}[ht!]
+\begin{table}[H]
 \begin{tabular}{|c|c|c|}
 \hline
 \textbf{Initialize Semaphores} & \textbf{Process 1} & \textbf{Process 2}  \\
@@ -164,7 +166,7 @@ V(S3)
 P(S2)
 P(S3)
 // Process 4 code ...
-V(S1)
+V(S2)
 V(S3) // For P5
 \end{lstlisting}
 &
@@ -172,16 +174,23 @@ V(S3) // For P5
 P(S2)
 P(S3)
 // Process 5 code ...
-V(S1)
+V(S2)
 V(S3) // For P4
 \end{lstlisting} \\\hline
 
 \end{tabular}
 \end{table}
 
+This does not have any deadlocks. There are some race conditions, meaning the order in which P2 and P3 run or P4 and P5 run is dependent on which
+happens to get the lock first which can vary from run to run. This is fine though, since we did not want to enforce any order on P2/P3 or P4/P5,
+but they still must execute after P1 and P2/P3, respectively. The idea of the code is that first everything is locked (initialized to zero), and
+then P1 unlocks the first semaphore. P2 or P3 then get the lock, execute their code, relinquish the lock, then each of P2 and P3 relinquish locks
+they own. P4 and P5 need to grab both P2 and P3's locks before executing, after which they relinquish those locks so the other can run. As the 
+order in which P2/P3 and P4/P5 get and release their locks is fixed, they cannot deadlock.
+
 \subsubsection*{Part b}
 Here we are allowed to use general counting semaphores. So we do the following:
-\begin{table}[ht!]
+\begin{table}[H]
 \begin{tabular}{|c|c|c|}
 \hline
 \textbf{Initialize Semaphores} & \textbf{Process 1} & \textbf{Process 2}  \\
@@ -228,6 +237,66 @@ P(S3)
 \end{tabular}
 \end{table}
 
+The idea is the same as the previous, except now each process can have in some sense multiple locks using one semaphore.
+Therefore this code can run more concurrently than the last one since P2/P3 and P4/P5 do not have to go one after the other but can run at the same time.
+This still does not allow deadlock, as there are no competing resources now that we have counting semaphores. If the main resource is not time but number of
+semaphores, there is a way to use less semaphores:
+
+\begin{table}[H]
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Initialize Semaphores} & \textbf{Process 1} & \textbf{Process 2}  \\
+
+\begin{lstlisting}
+S1.initialize(0)
+S2.initialize(0)
+S3.initialize(0)
+\end{lstlisting}
+ & 
+ \begin{lstlisting}
+// Process 1 code ...
+V(S1)
+V(S1)
+V(S1)
+\end{lstlisting}
+& 
+\begin{lstlisting}
+P(S1)
+// Process 2 code ...
+V(S2)
+\end{lstlisting} \\ \hline \hline
+\textbf{Process 3} & \textbf{Process 4} & \textbf{Process 5} \\
+
+\begin{lstlisting}
+P(S1)
+// Process 3 code ...
+V(S2)
+\end{lstlisting}
+& 
+\begin{lstlisting}
+P(S1)
+P(S2)
+P(S2)
+// Process 4 code ...
+V(S1)
+V(S2) // For P5
+V(S2)
+\end{lstlisting}
+&
+\begin{lstlisting}
+P(S1)
+P(S2)
+P(S2)
+// Process 5 code ...
+V(S1)
+V(S2) // For P4
+V(S2)
+\end{lstlisting} \\\hline
+
+\end{tabular}
+\end{table}
+
+Though this loses the concurrency benefit.
 
 
 \subsection*{Problem 4}
@@ -235,7 +304,7 @@ P(S3)
 Why do dead locks occur in the dining philosophers problem? Because we have shared resources that must be used exclusively by 1 party/philosopher.
 More specifically if we have a situation like this:
 
-\begin{figure}[h!]
+\begin{figure}[H]
  \centering 
  \includegraphics[scale=0.35]{dining-philosophers-problem-small.jpg}
  \caption{(I'm more partial to the chopsticks myself...)}
@@ -249,7 +318,7 @@ If none of the others ever drop it, then they will wait forever and starve. This
 To fix this problem we will make the philosophers drop the forks after a certain amount of time. We use notation similar to the one used in lecture. Basically
 we use a simple solution: Give an ordering to the forks. 
 
-\begin{figure}[h!]
+\begin{figure}[H]
 \begin{lstlisting}
 var fork: array[0..4] of semaphores=1
 philosopher i
@@ -273,7 +342,8 @@ forever
  This prevents deadlock by not allowing everyone to pick up the left fork at the same time. Suppose this did not prevent deadlock, then there must be some fork, say \textit{i} 
  that is locked forever. Then the philosopher using that must be waiting for a fork, \textit{j}, which must be great than \textit{i}. Keep going along the chain and eventually
  you must, since this is deadlocked, get back to \textit{i}, which means \textit{i} $>$ \textit{i}, which is nonsense. So we must have that this prevents deadlock. This is not very
- efficient, and there are more efficient solutions but this is the simplest (in my mind) that prevents deadlock. 
+ efficient, and there are more efficient solutions but this is the simplest (in my mind) that prevents deadlock. This is equivalent to something mentioned in class where you
+ make one of the philosophers a `righty' when the rest are `leftys'.
  
 \end{figure}
 
