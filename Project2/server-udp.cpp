@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
 	hints.ai_next = NULL;
 	// Get our IP address
 	addrinfo *serveraddr;
-	if (getaddrinfo(NULL,"2020",&hints,&serveraddr) < 0) {
+	if (getaddrinfo(NULL,"8269",&hints,&serveraddr) < 0) {
 		perror("Unable to get own IP address");
 		exit(EXIT_FAILURE);
 	}
@@ -83,8 +83,6 @@ int main(int argc, char *argv[]) {
 	}
 
 	close(ssocket);
-
-
 }
 
 void errorexit(const char *msg) {
