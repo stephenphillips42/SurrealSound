@@ -39,7 +39,7 @@ ErrCode ServerWorker::votefor(string name, int voterid) {
 vector<string> ServerWorker::listcandidates() {
   vector<string> candidatelist(votes.size()); // Number of votes
   int i = 0;
-  for(map< string, int >::iterator it = votes.end();
+  for(map< string, int >::iterator it = votes.begin();
         it != votes.end(); ++it) {
     candidatelist[i] = it->first;
     ++i;
@@ -48,7 +48,9 @@ vector<string> ServerWorker::listcandidates() {
 }
 
 int ServerWorker::votecount(string name) {
-  return 0;
+  if (votes.count(name) == 0) // make sure we don't insert needlessly
+    return 0;
+  return votes[name];
 }
 
 // The C++ API uses exceptions to check for failure, which is just overkill, so

@@ -9,6 +9,7 @@ all: part1
 
 test: test1
 	./test1
+	$(RM) test1
 
 test1: test1.o
 	$(CXX) $(LDFLAGS) -o test1 test1.o server.o $(LDLIBS)

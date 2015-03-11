@@ -52,6 +52,13 @@ int main(int argc, char *argv[]) {
 	candidates.insert("Bobby");
 	candidates.insert("Billy");
 	candidates.insert("Joey");
-	// vector<string> mycandidates = server.listcandidates();
+	vector<string> mycandidates = server.listcandidates();
+	for(unsigned int i = 0; i < mycandidates.size(); ++i) {
+		assert(candidates.count(mycandidates[i]) > 0);
+	}
+	// Vote count test
+	assert(server.votecount("Bobby") == 2);
+	assert(server.votecount("Billy") == 1);
+	assert(server.votecount("Joey") == 1);
 
 }
