@@ -11,10 +11,12 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
-#include <arpa/inet.h>
+#include <unistd.h>
 
 using namespace std;
 
+void errorexit(const char *msg);
+#define MAXSIZE 512
 
 // Run the server
 int main(int argc, char *argv[]) {
@@ -55,26 +57,37 @@ int main(int argc, char *argv[]) {
 		exit(EXIT_FAILURE);
 	}
 	// Main loop
+	// How many bytes we received
 	int nbytes = 0;
-	while(true) {
-		/* Wait for a datagram. */
-		size = sizeof (name);
-		nbytes = recvfrom (ssocket, message, MAXMSG, 0, (sockaddr*) & name, &size);
-		if (nbytes < 0) {
-			perror ("recfrom (server)");
-			exit (EXIT_FAILURE);
+	// Client address information
+	sockaddr_storage clientaddr;
+	socklen_t addrlen = 0;
+	// Client message
+	char message[MAXSIZE];
+	while(true) { // Loop forever...
+		// Wait for a datagram.
+		addrlen = sizeof(clientaddr);
+		if ((nbytes = recvfrom(ssocket, message, MAXSIZE, 0,
+											(sockaddr*)&clientaddr, &addrlen)) < 0) {
+			errorexit("Trouble receiving data");
 		}
 
 		/* Give a diagnostic message. */
-		fprintf (stderr, "Server: got message: %s\n", message);
+		fprintf(stderr, "Server: got message: %s\n", message);
 
 		/* Bounce the message back to the sender. */
-		nbytes = sendto (sock, message, nbytes, 0, (sockaddr*) & name, size);
-		if (nbytes < 0) {
-			perror ("sendto (server)");
-			exit (EXIT_FAILURE);
+		if (sendto(ssocket, message, nbytes, 0,
+								(sockaddr*)&clientaddr, addrlen) != nbytes) {
+			errorexit("Trouble sending data");
 		}
 	}
 
+	close(ssocket);
 
+
+}
+
+void errorexit(const char *msg) {
+	perror (msg);
+	exit (EXIT_FAILURE);
 }
