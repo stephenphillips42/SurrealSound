@@ -52,13 +52,3 @@ int ServerWorker::votecount(string name) {
     return 0;
   return votes[name];
 }
-
-// The C++ API uses exceptions to check for failure, which is just overkill, so
-// this function just checks that it is an integer
-bool isInteger(string s) {
-  if(s.empty() || ((!isdigit(s[0])) && (s[0] != '-') && (s[0] != '+')))
-    return false;
-  char * p;
-  strtol(s.c_str(), &p, 10);
-  return (*p == 0);
-}

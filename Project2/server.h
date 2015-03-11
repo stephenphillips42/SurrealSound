@@ -63,7 +63,4 @@ private:
   std::map< int, bool > voters;
   // Candidates are the keys, the number of votes is the value
   std::map< std::string, int > votes;
-
-  // Helper functions
-  bool isInteger(std::string s);
 };
