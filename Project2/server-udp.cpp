@@ -86,6 +86,7 @@ int main(int argc, char *argv[]) {
 								(sockaddr*)&clientaddr, addrlen) != nbytes) {
 			errorexit("Trouble sending data");
 		}
+		cerr << "------- Done -------" << endl << endl;
 	}
 
 	close(ssocket);

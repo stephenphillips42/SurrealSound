@@ -17,24 +17,15 @@ using namespace std;
 int
 main(int argc, char *argv[])
 {
-  if (argc < 4) {
-    cerr << "Usage: " << argv[0] << " host port voterid..." << endl;
+  if (argc < 3) {
+    cerr << "Usage: " << argv[0] << " host port..." << endl;
     exit(EXIT_FAILURE);
   }
-  // Input handling
-  if (!isInteger(argv[3])) {
-    cerr << "Voter ID must be an integer" << endl;
-    exit(EXIT_FAILURE);
-  }
-  int voterid = atoi(argv[3]);
-  ClientPacketMaker packetMaker(voterid);
-  string packet = packetMaker.addvoter();
+  ClientPacketMaker packetMaker(0);
+  string packet = packetMaker.listcandidates();
 
   string response = sendPacketUDP(argv[1],argv[2],packet);
   cout << packetMaker.parseresponse(response) << endl;
 
   exit(EXIT_SUCCESS);
 }
-
-
-

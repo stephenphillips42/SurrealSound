@@ -29,7 +29,7 @@ enum PacketType {
 std::string PacketTypeToString(PacketType type);
 
 // Client packets are of the form:
-// <PACKET-TYPE> "-" (<ARGUEMENT1> "-" <ARGUEMENT2> "-" ...)
+// <PACKET-TYPE> ":" (<ARGUEMENT1> ":" <ARGUEMENT2> ":" ...)
 
 // These functions implement the network side of the server API, see server.h
 // for details on the API
@@ -47,7 +47,7 @@ private:
 };
 
 // Server packets are of the form:
-// <PACKET-TYPE> "-" <ERROR-CODE> ("-" <RETURN-VALUES>)
+// <PACKET-TYPE> ":" <ERROR-CODE> (":" <RETURN-VALUES>)
 
 class ServerPacketMaker {
 public:
@@ -69,6 +69,7 @@ private:
 
 // Helper function
 bool isInteger(std::string s);
+std::string sendPacketUDP(char* dest_ip, char* dest_port, std::string packet);
 
 #endif
 
