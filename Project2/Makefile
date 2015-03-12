@@ -1,11 +1,11 @@
 CXX=g++
 DEBUG=-g
-CPPFLAGS=-Wall -c
+CPPFLAGS=-Wall 
 LDFLAGS=-Wall
 RM=rm -f
 LDLIBS=-lstdc++
 
-all: server-udp client-udp
+all: server-udp client-udp add-voter-udp
 
 test: test1
 	./test1
@@ -14,13 +14,18 @@ test: test1
 test1: test1.o
 	$(CXX) $(LDFLAGS) -o test1 test1.o server.o $(LDLIBS)
 
-client-udp.o: client-udp.cpp
+add-voter-udp: add-voter-udp.cpp packetmaker.o server.o
+	$(CXX) $(LDFLAGS) -o add-voter-udp add-voter-udp.cpp packetmaker.o server.o $(LDLIBS)
 
-server-udp.o: server-udp.cpp server.o
+packetmaker.o: packetmaker.cpp packetmaker.h errorcode.h server.o
+
+client-udp.o: client-udp.cpp packetmaker.o
+
+server-udp.o: server-udp.cpp server.o packetmaker.o
 
 test1.o: test1.cpp server.o
 
-server.o: server.cpp server.h
+server.o: server.cpp server.h errorcode.h
 
 clean:
-	$(RM) *.o *~ server-udp test1 client-udp
+	$(RM) *.o *~ server-udp test1 client-udp add-voter-udp

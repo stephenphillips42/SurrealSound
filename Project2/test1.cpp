@@ -20,32 +20,32 @@ int main(int argc, char *argv[]) {
 	ServerWorker server;
 	// Voters' tests
 	assert(server.addvoter(1) == OK);
-  assert(server.addvoter(1) == EXISTS);
-  assert(server.addvoter(12) == OK);
+	assert(server.addvoter(1) == EXISTS);
+	assert(server.addvoter(12) == OK);
 	assert(server.addvoter(15) == OK);
 	assert(server.addvoter(-25) == OK);
 
 	// Voting tests
-	assert(server.votefor("Bobby",1) == NEW);
-	assert(server.votefor("Bobby",1) == ALREADYVOTED);
-	assert(server.votefor("Bobby",12) == EXISTS);
-	assert(server.votefor("Billy",15) == NEW);
-	assert(server.votefor("Billy",127) == NOTAVOTER);
-	assert(server.votefor("Joey",-25) == NEW);
+	assert(server.votefor(1,"Bobby") == NEW);
+	assert(server.votefor(1,"Bobby") == ALREADYVOTED);
+	assert(server.votefor(12,"Bobby") == EXISTS);
+	assert(server.votefor(15,"Billy") == NEW);
+	assert(server.votefor(127,"Billy") == NOTAVOTER);
+	assert(server.votefor(-25,"Joey") == NEW);
 
 	// Zeroize test
-	assert(server.zeroize());
+	assert(server.zeroize() == TRUEVALUE);
 	assert(server.addvoter(1) == OK);
 	assert(server.addvoter(15) == OK);
-  assert(server.addvoter(12) == OK);
-  assert(server.addvoter(1) == EXISTS);
+	assert(server.addvoter(12) == OK);
+	assert(server.addvoter(1) == EXISTS);
 	assert(server.addvoter(-25) == OK);
-	assert(server.votefor("Bobby",1) == NEW);
-	assert(server.votefor("Bobby",-25) == EXISTS);
-	assert(server.votefor("Billy",21) == NOTAVOTER);
-	assert(server.votefor("Billy",15) == NEW);
-	assert(server.votefor("Joey",-25) == ALREADYVOTED);
-	assert(server.votefor("Joey",12) == NEW);
+	assert(server.votefor(1,"Bobby") == NEW);
+	assert(server.votefor(-25,"Bobby") == EXISTS);
+	assert(server.votefor(21,"Billy") == NOTAVOTER);
+	assert(server.votefor(15,"Billy") == NEW);
+	assert(server.votefor(-25,"Joey") == ALREADYVOTED);
+	assert(server.votefor(12,"Joey") == NEW);
 
 	// List candidates test
 	set<string> candidates;
@@ -60,5 +60,6 @@ int main(int argc, char *argv[]) {
 	assert(server.votecount("Bobby") == 2);
 	assert(server.votecount("Billy") == 1);
 	assert(server.votecount("Joey") == 1);
+	assert(server.votecount("Tammy") == -1);
 
 }

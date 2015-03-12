@@ -5,10 +5,10 @@ using namespace std;
 
 // Server function implementations
 
-bool ServerWorker::zeroize() {
+ErrCode ServerWorker::zeroize() {
   voters.clear();
   votes.clear();
-  return true;
+  return TRUEVALUE;
 }
 
 ErrCode ServerWorker::addvoter(int voterid) {
@@ -19,7 +19,7 @@ ErrCode ServerWorker::addvoter(int voterid) {
   return OK;
 }
 
-ErrCode ServerWorker::votefor(string name, int voterid) {
+ErrCode ServerWorker::votefor(int voterid, string name) {
   // Handle failure cases
   if (voters.count(voterid) == 0) {
     return NOTAVOTER;
@@ -49,6 +49,6 @@ vector<string> ServerWorker::listcandidates() {
 
 int ServerWorker::votecount(string name) {
   if (votes.count(name) == 0) // make sure we don't insert needlessly
-    return 0;
+    return -1;
   return votes[name];
 }
