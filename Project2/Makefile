@@ -17,15 +17,16 @@ test1: test1.o
 add-voter-udp: add-voter-udp.cpp packetmaker.o server.o
 	$(CXX) $(LDFLAGS) -o add-voter-udp add-voter-udp.cpp packetmaker.o server.o $(LDLIBS)
 
+server-udp: server-udp.cpp packetmaker.o server.o
+	$(CXX) $(LDFLAGS) -o server-udp server-udp.cpp packetmaker.o server.o $(LDLIBS)
+
 packetmaker.o: packetmaker.cpp packetmaker.h errorcode.h server.o
 
 client-udp.o: client-udp.cpp packetmaker.o
-
-server-udp.o: server-udp.cpp server.o packetmaker.o
 
 test1.o: test1.cpp server.o
 
 server.o: server.cpp server.h errorcode.h
 
 clean:
-	$(RM) *.o *~ server-udp test1 client-udp add-voter-udp
+	$(RM) *.o *~ server-udp test1 *-udp

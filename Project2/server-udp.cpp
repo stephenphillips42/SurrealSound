@@ -3,6 +3,7 @@
 // PennKey: stephi
 // PennID: 14378269
 #include "server.h"
+#include "packetmaker.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
@@ -24,7 +25,8 @@ int main(int argc, char *argv[]) {
 	// Create socket with port 8269 (datagram, INET?)
 	// Use select to wait for something to come
 	// When something does come, check the packet and process it accordingly
-	cout << "Hello world" << endl;
+	cout << "Running server on localhost, port 8269" << endl;
+	ServerPacketMaker packetMaker;
 
 	// Get hint for the input address
 	addrinfo hints;
@@ -42,9 +44,9 @@ int main(int argc, char *argv[]) {
 		perror("Unable to get own IP address");
 		exit(EXIT_FAILURE);
 	}
+
 	// OK so technically this returns a list - I'll ignore them and just use
 	// the first one returned
-
 	// Set up the socket
 	int ssocket = 0; // Server Socket
 	if ((ssocket = socket(PF_INET,SOCK_DGRAM,0)) < 0) {
@@ -63,20 +65,24 @@ int main(int argc, char *argv[]) {
 	sockaddr_storage clientaddr;
 	socklen_t addrlen = 0;
 	// Client message
-	char message[MAXSIZE];
+	char msg[MAXSIZE];
+	string response;
 	while(true) { // Loop forever...
 		// Wait for a datagram.
 		addrlen = sizeof(clientaddr);
-		if ((nbytes = recvfrom(ssocket, message, MAXSIZE, 0,
+		if ((nbytes = recvfrom(ssocket, msg, MAXSIZE, 0,
 											(sockaddr*)&clientaddr, &addrlen)) < 0) {
 			errorexit("Trouble receiving data");
 		}
 
-		/* Give a diagnostic message. */
-		fprintf(stderr, "Server: got message: %s\n", message);
+		// Echo the input
+		cout << "Got message: " << msg << endl;
 
-		/* Bounce the message back to the sender. */
-		if (sendto(ssocket, message, nbytes, 0,
+		// Respond to the sender.
+		response = packetMaker.processpacket(string(msg));
+		nbytes = response.size()+1;
+		cerr << "Sending response: " << response << endl;
+		if (sendto(ssocket, response.c_str(), nbytes, 0,
 								(sockaddr*)&clientaddr, addrlen) != nbytes) {
 			errorexit("Trouble sending data");
 		}

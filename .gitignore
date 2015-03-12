@@ -24,6 +24,7 @@
 Project1/bin/*
 Project2/test1
 Project2/part1
+Project2/*-udp
 *.exe
 *.out
 *.app

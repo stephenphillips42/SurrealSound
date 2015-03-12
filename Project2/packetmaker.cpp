@@ -173,12 +173,16 @@ string ServerPacketMaker::processpacket(string packet) {
   // Find the first divide, which is always there in well formed packets
   unsigned int divide1 = packet.find("-");
   if (divide1 == string::npos) {
+    cerr << "Can't find -" << endl;
     return sendError(type);
   }
 
   // Parse out packet type
-  string typeStr = packet.substr(0,divide1-1);
+  string typeStr = packet.substr(0,divide1);
   if (!isInteger(typeStr)) {
+    cerr << "Invalid formated type: " << typeStr << endl;
+    cerr << "Divide is " << divide1 << endl;
+
     return sendError(type);
   }
   else {
@@ -189,16 +193,22 @@ string ServerPacketMaker::processpacket(string packet) {
   // packet should be formatted
   switch(type) {
     case ZEROIZE:
+      cerr << "Working on zeroize" << endl;
       return zeroize();
     case ADDVOTER:
+      cerr << "Working on addvoter" << endl;
       return addvoter(packet);
     case VOTEFOR:
+      cerr << "Working on votefor" << endl;
       return votefor(packet);
     case LIST:
+      cerr << "Working on listcandidates" << endl;
       return listcandidates();
     case VOTECOUNT:
+      cerr << "Working on votecount" << endl;
       return votecount(packet);
     default:
+      cerr << "Working on sendError" << endl;
       return sendError(type);
   }
   return packet;
@@ -251,7 +261,7 @@ string ServerPacketMaker::votefor(string packet) {
   unsigned int divide = packet.find("-",startPos);
   if (divide + 1 >= string::npos)
     return sendError(type);
-  string voteridStr = packet.substr(startPos,divide-1);
+  string voteridStr = packet.substr(startPos,divide-startPos);
   if (!isInteger(voteridStr))
     return sendError(type);
 
@@ -292,7 +302,7 @@ string ServerPacketMaker::votecount(string packet) {
   unsigned int divide = packet.find("-",startPos);
   if (divide + 1 >= string::npos)
     return sendError(type);
-  string name = packet.substr(startPos,divide-1);
+  string name = packet.substr(startPos,divide-startPos);
 
 
   int nvotes = worker->votecount(name);
@@ -306,10 +316,10 @@ string ServerPacketMaker::votecount(string packet) {
 
 string ServerPacketMaker::sendError(PacketType type) {
   string response;
-  response.append(PacketTypeToString(type));
+  response.append(SSTR(type));
   response.append("-");
   ErrCode errcode = ERROR;
-  response.append(ErrCodeToString(errcode));
+  response.append(SSTR(errcode));
   return response;
 }
 
