@@ -5,8 +5,8 @@ LDFLAGS=-Wall
 RM=rm -f
 LDLIBS=-lstdc++
 
-all: server-udp client-udp add-voter-udp vote-zero-udp vote-udp list-candidates-udp vote-count-udp
-
+all: server-udp add-voter-udp vote-zero-udp vote-udp list-candidates-udp vote-count-udp \
+     server-tcp add-voter-tcp vote-zero-tcp vote-tcp list-candidates-tcp vote-count-tcp
 # Testing
 test: test1
 	./test1
@@ -34,11 +34,28 @@ list-candidates-udp: list-candidates-udp.cpp packetmaker.o server.o
 vote-count-udp: vote-count-udp.cpp packetmaker.o server.o
 	$(CXX) $(LDFLAGS) -o vote-count-udp vote-count-udp.cpp packetmaker.o server.o $(LDLIBS)
 
+# TCP functions
+server-tcp: server-tcp.cpp packetmaker.o server.o
+	$(CXX) $(LDFLAGS) -o server-tcp server-tcp.cpp packetmaker.o server.o $(LDLIBS)
+
+vote-zero-tcp: vote-zero-tcp.cpp packetmaker.o server.o
+	$(CXX) $(LDFLAGS) -o vote-zero-tcp vote-zero-tcp.cpp packetmaker.o server.o $(LDLIBS)
+
+add-voter-tcp: add-voter-tcp.cpp packetmaker.o server.o
+	$(CXX) $(LDFLAGS) -o add-voter-tcp add-voter-tcp.cpp packetmaker.o server.o $(LDLIBS)
+
+vote-tcp: vote-tcp.cpp packetmaker.o server.o
+	$(CXX) $(LDFLAGS) -o vote-tcp vote-tcp.cpp packetmaker.o server.o $(LDLIBS)
+
+list-candidates-tcp: list-candidates-tcp.cpp packetmaker.o server.o
+	$(CXX) $(LDFLAGS) -o list-candidates-tcp list-candidates-tcp.cpp packetmaker.o server.o $(LDLIBS)
+
+vote-count-tcp: vote-count-tcp.cpp packetmaker.o server.o
+	$(CXX) $(LDFLAGS) -o vote-count-tcp vote-count-tcp.cpp packetmaker.o server.o $(LDLIBS)
+
 
 # Basic dependencies
 packetmaker.o: packetmaker.cpp packetmaker.h errorcode.h server.o
-
-client-udp.o: client-udp.cpp packetmaker.o
 
 test1.o: test1.cpp server.o
 
@@ -46,4 +63,4 @@ server.o: server.cpp server.h errorcode.h
 
 # Clean up!
 clean:
-	$(RM) *.o *~ server-udp test1 *-udp
+	$(RM) *.o *~ server-udp test1 *-udp *-tcp *.test

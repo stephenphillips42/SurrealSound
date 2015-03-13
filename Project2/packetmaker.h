@@ -70,6 +70,7 @@ private:
 // Helper function
 bool isInteger(std::string s);
 std::string sendPacketUDP(char* dest_ip, char* dest_port, std::string packet);
+std::string sendPacketTCP(char* dest_ip, char* dest_port, std::string packet);
 
 #endif
 

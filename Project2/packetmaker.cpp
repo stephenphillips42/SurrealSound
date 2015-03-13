@@ -137,7 +137,7 @@ string ClientPacketMaker::parseresponse(string response) {
 
   // Finding the error code
   string codeStr;
-  if (divide2 == string::npos) {
+  if (divide2 > response.size()) {
     codeStr = response.substr(divide1+1);
   }
   else {
@@ -160,7 +160,7 @@ string ClientPacketMaker::parseresponse(string response) {
     parsedresponse.append(": Success of type ");
     parsedresponse.append(errcodeFormat);
     parsedresponse.append("\nReturn:\n");
-    if (divide2 == string::npos) { //  || response.size() >= divide2+1) {
+    if (divide2 > response.size()) { //  || response.size() >= divide2+1) {
       parsedresponse.append(""); // Add nothing
     }
     else {
@@ -183,7 +183,7 @@ string ServerPacketMaker::processpacket(string packet) {
 
   // Find the first divide, which is always there in well formed packets
   unsigned int divide1 = packet.find(DELIM);
-  if (divide1 == string::npos) {
+  if (divide1 > packet.size()) {
     cerr << "Can't find -" << endl;
     return sendError(type);
   }
@@ -357,13 +357,15 @@ bool isInteger(string s) {
   return (*p == 0);
 }
 
+
 // Help for the clients - automatic packet sender
-string sendPacketUDP(char* dest_ip, char* dest_port, string packet) {
+string sendPacket(char* dest_ip, char* dest_port, string packet, int socktype) {
   // Get address matching intput arguments
   addrinfo hints;
   memset(&hints, 0, sizeof(addrinfo));
   hints.ai_family = AF_UNSPEC; // Allow IPv4 or IPv6
-  hints.ai_socktype = SOCK_DGRAM; // Datagram socket
+  // Socket type - the only thing that changes between TCP and UDP
+  hints.ai_socktype = socktype;
   hints.ai_flags = 0;
   hints.ai_protocol = 0; // Any protocol
 
@@ -387,13 +389,16 @@ string sendPacketUDP(char* dest_ip, char* dest_port, string packet) {
   }
   if (connect(ssocket, saddr->ai_addr, saddr->ai_addrlen) < 0) {
     cerr << "Could not connect to server" << endl;
+    close(ssocket);
     exit(EXIT_FAILURE);
   }
 
+  // Write and read are the same as send/sendto and recv/recvfrom with no
   cout << "Packet: " << packet << endl;
   if (write(ssocket, packet.c_str(), packet.size()+1)
         != (unsigned)(packet.size()+1)) {
     cerr << "Partial/failed write" << endl;
+    close(ssocket);
     exit(EXIT_FAILURE);
   }
 
@@ -401,10 +406,18 @@ string sendPacketUDP(char* dest_ip, char* dest_port, string packet) {
   ssize_t nread = read(ssocket, buf, MAXLEN);
   if (nread < 0) {
     perror("read");
+    close(ssocket);
     exit(EXIT_FAILURE);
   }
+  close(ssocket);
 
   return string(buf);
 }
 
+string sendPacketUDP(char* dest_ip, char* dest_port, string packet) {
+  return sendPacket(dest_ip, dest_port, packet, SOCK_DGRAM);
+}
 
+string sendPacketTCP(char* dest_ip, char* dest_port, string packet) {
+  return sendPacket(dest_ip, dest_port, packet, SOCK_STREAM);
+}
