@@ -5,8 +5,8 @@ LDFLAGS=-Wall
 RM=rm -f
 LDLIBS=-lstdc++
 
-all: server-udp add-voter-udp vote-zero-udp vote-udp list-candidates-udp vote-count-udp \
-     server-tcp add-voter-tcp vote-zero-tcp vote-tcp list-candidates-tcp vote-count-tcp
+all: server-udp add-voter-udp vote-zero-udp vote-udp zeroize-udp list-candidates-udp vote-count-udp \
+     server-tcp add-voter-tcp vote-zero-tcp vote-tcp zeroize-tcp list-candidates-tcp vote-count-tcp
 # Testing
 test: test1
 	./test1
@@ -28,6 +28,9 @@ add-voter-udp: add-voter-udp.cpp packetmaker.o server.o
 vote-udp: vote-udp.cpp packetmaker.o server.o
 	$(CXX) $(LDFLAGS) -o vote-udp vote-udp.cpp packetmaker.o server.o $(LDLIBS)
 
+zeroize-udp: zeroize-udp.cpp packetmaker.o server.o
+	$(CXX) $(LDFLAGS) -o zeroize-udp zeroize-udp.cpp packetmaker.o server.o $(LDLIBS)
+
 list-candidates-udp: list-candidates-udp.cpp packetmaker.o server.o
 	$(CXX) $(LDFLAGS) -o list-candidates-udp list-candidates-udp.cpp packetmaker.o server.o $(LDLIBS)
 
@@ -46,6 +49,9 @@ add-voter-tcp: add-voter-tcp.cpp packetmaker.o server.o
 
 vote-tcp: vote-tcp.cpp packetmaker.o server.o
 	$(CXX) $(LDFLAGS) -o vote-tcp vote-tcp.cpp packetmaker.o server.o $(LDLIBS)
+
+zeroize-tcp: zeroize-tcp.cpp packetmaker.o server.o
+	$(CXX) $(LDFLAGS) -o zeroize-tcp zeroize-tcp.cpp packetmaker.o server.o $(LDLIBS)
 
 list-candidates-tcp: list-candidates-tcp.cpp packetmaker.o server.o
 	$(CXX) $(LDFLAGS) -o list-candidates-tcp list-candidates-tcp.cpp packetmaker.o server.o $(LDLIBS)
