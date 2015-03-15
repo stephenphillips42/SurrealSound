@@ -56,14 +56,20 @@ string ErrCodeToString(ErrCode code) {
   switch(code) {
     case OK:
       return "OK";
+    case TRUEVALUE:
+      return "TRUE";
     case NEW:
       return "NEW";
     case EXISTS:
       return "EXISTS";
     case ERROR:
       return "ERROR";
+    case FALSEVALUE:
+      return "FALSE";
     case NOTAVOTER:
       return "NOTAVOTER";
+    case NOTACANDIDATE:
+      return "NOTACANDIDATE";
     case ALREADYVOTED:
       return "ALREADYVOTED";
     default:

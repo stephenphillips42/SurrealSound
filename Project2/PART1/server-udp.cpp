@@ -2,8 +2,8 @@
 // Author: Stephen Phillips
 // PennKey: stephi
 // PennID: 14378269
-#include "server.h"
-#include "packetmaker.h"
+#include "../server.h"
+#include "../packetmaker.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
