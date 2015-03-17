@@ -1,4 +1,6 @@
 README
+Author: Stephen Phillips
+PennKey: stephi
 
 ------------------------------
 Acknowledgements
@@ -8,8 +10,11 @@ the man pages as references, since they have good examples, but I looked at
 those pages for tips. I also used it a lot for the extra credit portion.
 
 ------------------------------
-Assumptions
+Programming notes
 ------------------------------
+All the servers run on port 8269. The clients' ports are chosen automatically
+by the OS.
+
 The way things are layed out are the same as written in the specs: we have one
 file for each function that the server provides:
 ./vote-zero-xxx

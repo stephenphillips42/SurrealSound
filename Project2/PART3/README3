@@ -1,0 +1,8 @@
+README for Part 3
+
+The interface for the RPC server is specified in the rpc_server.x file, as
+mentioned in the top level README. The sample script rpc-voting.sh does the
+same calls as the previous two. There is not as much output, so running it
+all in the same terminal is fine. 
+
+The other details are specified in the top level README.
