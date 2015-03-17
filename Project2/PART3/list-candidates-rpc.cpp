@@ -25,7 +25,7 @@ int
 main(int argc, char *argv[])
 {
   if (argc < 2) {
-    cerr << "Usage: " << argv[0] << " host..." << endl;
+    cout << "Usage: " << argv[0] << " host..." << endl;
     exit(EXIT_FAILURE);
   }
   // Getting RPC connection

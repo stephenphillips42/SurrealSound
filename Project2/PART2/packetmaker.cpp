@@ -184,15 +184,15 @@ string ServerPacketMaker::processpacket(string packet) {
   // Find the first divide, which is always there in well formed packets
   unsigned int divide1 = packet.find(DELIM);
   if (divide1 > packet.size()) {
-    cerr << "Can't find -" << endl;
+    cout << "Can't find -" << endl;
     return sendError(type);
   }
 
   // Parse out packet type
   string typeStr = packet.substr(0,divide1);
   if (!isInteger(typeStr)) {
-    cerr << "Invalid formated type: " << typeStr << endl;
-    cerr << "Divide is " << divide1 << endl;
+    cout << "Invalid formated type: " << typeStr << endl;
+    cout << "Divide is " << divide1 << endl;
 
     return sendError(type);
   }
@@ -204,22 +204,22 @@ string ServerPacketMaker::processpacket(string packet) {
   // packet should be formatted
   switch(type) {
     case ZEROIZE:
-      cerr << "Working on zeroize" << endl;
+      cout << "Working on zeroize" << endl;
       return zeroize();
     case ADDVOTER:
-      cerr << "Working on addvoter" << endl;
+      cout << "Working on addvoter" << endl;
       return addvoter(packet);
     case VOTEFOR:
-      cerr << "Working on votefor" << endl;
+      cout << "Working on votefor" << endl;
       return votefor(packet);
     case LIST:
-      cerr << "Working on listcandidates" << endl;
+      cout << "Working on listcandidates" << endl;
       return listcandidates();
     case VOTECOUNT:
-      cerr << "Working on votecount" << endl;
+      cout << "Working on votecount" << endl;
       return votecount(packet);
     default:
-      cerr << "Working on sendError" << endl;
+      cout << "Working on sendError" << endl;
       return sendError(type);
   }
   return packet; // So this should never get here...
@@ -249,12 +249,12 @@ string ServerPacketMaker::addvoter(string packet) {
 
   // Tons and tons of error checking
   if (startPos >= packet.size()) {
-    cerr << "Packet too small to parse" << endl;
+    cout << "Packet too small to parse" << endl;
     return sendError(type);
   }
   string voteridStr = packet.substr(startPos);
   if (!isInteger(voteridStr)) {
-    cerr << "Voter ID is not a integer: " << voteridStr << endl;
+    cout << "Voter ID is not a integer: " << voteridStr << endl;
     return sendError(type);
   }
 
@@ -275,12 +275,12 @@ string ServerPacketMaker::votefor(string packet) {
   // So much error checking...
   unsigned int divide = packet.find(DELIM,startPos);
   if (divide + 1 >= string::npos) {
-    cerr << "Nothing in the second part of packet: " << packet << endl;
+    cout << "Nothing in the second part of packet: " << packet << endl;
     return sendError(type);
   }
   string voteridStr = packet.substr(startPos,divide-startPos);
   if (!isInteger(voteridStr)) {
-    cerr << "Voter ID is not a integer: " << voteridStr << endl;
+    cout << "Voter ID is not a integer: " << voteridStr << endl;
     return sendError(type);
   }
 
@@ -321,7 +321,7 @@ string ServerPacketMaker::votecount(string packet) {
   // Simple error checking
   unsigned int divide = packet.find(DELIM,startPos);
   if (divide + 1 >= string::npos) {
-    cerr << "Nothing in the second part of packet: " << packet << endl;
+    cout << "Nothing in the second part of packet: " << packet << endl;
     return sendError(type);
   }
   string name = packet.substr(startPos,divide-startPos);
@@ -371,11 +371,11 @@ string sendPacket(char* dest_ip, char* dest_port, string packet, int socktype) {
 
   addrinfo *saddr;
   if (getaddrinfo(dest_ip, dest_port, &hints, &saddr) < 0) {
-    cerr << "Error with getaddrinfo" << endl;
+    cout << "Error with getaddrinfo" << endl;
     exit(EXIT_FAILURE);
   }
   if (saddr == NULL) {               // No address succeeded
-    cerr << "Could not connect" << endl;
+    cout << "Could not connect" << endl;
     exit(EXIT_FAILURE);
   }
 
@@ -384,11 +384,11 @@ string sendPacket(char* dest_ip, char* dest_port, string packet, int socktype) {
   int ssocket =
         socket(saddr->ai_family, saddr->ai_socktype, saddr->ai_protocol);
   if (ssocket < 0) {
-    cerr << "Failed to create socket to server" << endl;
+    cout << "Failed to create socket to server" << endl;
     exit(EXIT_FAILURE);
   }
   if (connect(ssocket, saddr->ai_addr, saddr->ai_addrlen) < 0) {
-    cerr << "Could not connect to server" << endl;
+    cout << "Could not connect to server" << endl;
     close(ssocket);
     exit(EXIT_FAILURE);
   }
@@ -397,7 +397,7 @@ string sendPacket(char* dest_ip, char* dest_port, string packet, int socktype) {
   cout << "Packet: " << packet << endl;
   if (write(ssocket, packet.c_str(), packet.size()+1)
         != (unsigned)(packet.size()+1)) {
-    cerr << "Partial/failed write" << endl;
+    cout << "Partial/failed write" << endl;
     close(ssocket);
     exit(EXIT_FAILURE);
   }

@@ -20,7 +20,7 @@ int
 main(int argc, char *argv[])
 {
   if (argc < 3) {
-    cerr << "Usage: " << argv[0] << " host voterid..." << endl;
+    cout << "Usage: " << argv[0] << " host voterid..." << endl;
     exit(EXIT_FAILURE);
   }
   // Getting RPC connection
@@ -32,7 +32,7 @@ main(int argc, char *argv[])
   }
   // Input handling
   if (!isInteger(argv[2])) {
-    cerr << "Voter ID must be an integer" << endl;
+    cout << "Voter ID must be an integer" << endl;
     exit(EXIT_FAILURE);
   }
   // RPC Call

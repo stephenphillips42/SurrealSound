@@ -18,12 +18,12 @@ int
 main(int argc, char *argv[])
 {
   if (argc < 4) {
-    cerr << "Usage: " << argv[0] << " host port voterid..." << endl;
+    cout << "Usage: " << argv[0] << " host port voterid..." << endl;
     exit(EXIT_FAILURE);
   }
   // Input handling
   if (!isInteger(argv[3])) {
-    cerr << "Voter ID must be an integer" << endl;
+    cout << "Voter ID must be an integer" << endl;
     exit(EXIT_FAILURE);
   }
   int voterid = atoi(argv[3]);

@@ -23,7 +23,7 @@ int
 main(int argc, char *argv[])
 {
   if (argc < 3) {
-    cerr << "Usage: " << argv[0] << " host port..." << endl;
+    cout << "Usage: " << argv[0] << " host port..." << endl;
     exit(EXIT_FAILURE);
   }
   RetVal *retval = rpc_zeroize_1();

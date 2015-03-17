@@ -6,7 +6,7 @@ std::string RPCErrCodeToString(RPCErrCode ec) {
     case RPC_OK:
       return "OK";
     case RPC_TRUEVALUE:
-      return "TRUEVALUE";
+      return "TRUE";
     case RPC_NEW:
       return "NEW";
     case RPC_EXISTS:
@@ -14,7 +14,7 @@ std::string RPCErrCodeToString(RPCErrCode ec) {
     case RPC_ERROR:
       return "ERROR";
     case RPC_FALSEVALUE:
-      return "FALSEVALUE";
+      return "FALSE";
     case RPC_NOTAVOTER:
       return "NOTAVOTER";
     case RPC_NOTACANDIDATE:

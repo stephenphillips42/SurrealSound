@@ -25,7 +25,6 @@ int main(int argc, char *argv[]) {
   // Create socket with port 8269 (datagram, INET?)
   // Use select to wait for something to come
   // When something does come, check the packet and process it accordingly
-  cout << "Running server on localhost, port 8269" << endl;
   ServerPacketMaker packetMaker;
 
   // Get hint for the input address
@@ -44,6 +43,7 @@ int main(int argc, char *argv[]) {
     perror("Unable to get own IP address");
     exit(EXIT_FAILURE);
   }
+  cout << "Running server on localhost, port 8269" << endl;
 
   // OK so technically this returns a list - I'll ignore them and just use
   // the first one returned
@@ -81,12 +81,12 @@ int main(int argc, char *argv[]) {
     // Respond to the sender.
     response = packetMaker.processpacket(string(msg));
     nbytes = response.size()+1;
-    cerr << "Sending response: " << response << endl;
+    cout << "Sending response: " << response << endl;
     if (sendto(ssocket, response.c_str(), nbytes, 0,
                 (sockaddr*)&clientaddr, addrlen) != nbytes) {
       errorexit("Trouble sending data");
     }
-    cerr << "------- Done -------" << endl << endl;
+    cout << "------- Done -------" << endl << endl;
   }
 
   close(ssocket);
