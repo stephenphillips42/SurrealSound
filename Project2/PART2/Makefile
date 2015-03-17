@@ -5,7 +5,7 @@ LDFLAGS=-Wall
 RM=rm -f
 LDLIBS=-lstdc++
 
-all: server-tcp add-voter-tcp vote-zero-tcp vote-tcp zeroize-tcp list-candidates-tcp vote-count-tcp
+all: server-tcp add-voter-tcp vote-zero-tcp vote-tcp list-candidates-tcp vote-count-tcp
 
 # TCP functions
 server-tcp: server-tcp.cpp ../packetmaker.o ../server.o
@@ -19,9 +19,6 @@ add-voter-tcp: add-voter-tcp.cpp ../packetmaker.o ../server.o
 
 vote-tcp: vote-tcp.cpp ../packetmaker.o ../server.o
 	$(CXX) $(LDFLAGS) -o vote-tcp vote-tcp.cpp ../packetmaker.o ../server.o $(LDLIBS)
-
-zeroize-tcp: zeroize-tcp.cpp ../packetmaker.o ../server.o
-	$(CXX) $(LDFLAGS) -o zeroize-tcp zeroize-tcp.cpp ../packetmaker.o ../server.o $(LDLIBS)
 
 list-candidates-tcp: list-candidates-tcp.cpp ../packetmaker.o ../server.o
 	$(CXX) $(LDFLAGS) -o list-candidates-tcp list-candidates-tcp.cpp ../packetmaker.o ../server.o $(LDLIBS)

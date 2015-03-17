@@ -12,6 +12,7 @@ SERVERPID=$!
 ./vote-rpc 127.0.0.1 bill 1 
 ./vote-rpc 127.0.0.1 bob 2 
 ./vote-rpc 127.0.0.1 bill 2 
+./vote-rpc 127.0.0.1 bill 3 
 
 # Candidate tests
 ./list-candidates-rpc 127.0.0.1
@@ -20,7 +21,7 @@ SERVERPID=$!
 ./vote-count-rpc 127.0.0.1 joe 
 
 # Zeroize tests
-./zeroize-rpc 127.0.0.1 
+./vote-zero-rpc 127.0.0.1 
 
 echo
 echo Zeroize

@@ -3,6 +3,8 @@
 ./server-udp &
 SERVERPID=$!
 
+sleep 0.1
+
 # Add voter tests
 ./add-voter-udp 127.0.0.1 8269 1 
 ./add-voter-udp 127.0.0.1 8269 2 
@@ -12,6 +14,7 @@ SERVERPID=$!
 ./vote-udp 127.0.0.1 8269 bill 1 
 ./vote-udp 127.0.0.1 8269 bob 2 
 ./vote-udp 127.0.0.1 8269 bill 2 
+./vote-udp 127.0.0.1 8269 bill 3 
 
 # Candidate tests
 ./list-candidates-udp 127.0.0.1 8269
@@ -20,7 +23,7 @@ SERVERPID=$!
 ./vote-count-udp 127.0.0.1 8269 joe 
 
 # Zeroize tests
-./zeroize-udp 127.0.0.1 8269 
+./vote-zero-udp 127.0.0.1 8269 
 
 echo
 echo Zeroize

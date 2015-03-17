@@ -1,7 +1,9 @@
 #!/bin/bash
 # Start server
-./server-tcp &
+./server-tcp >> servertcp.test &
 SERVERPID=$!
+
+sleep 0.1
 
 # Add voter tests
 ./add-voter-tcp 127.0.0.1 8269 1 
@@ -12,6 +14,7 @@ SERVERPID=$!
 ./vote-tcp 127.0.0.1 8269 bill 1 
 ./vote-tcp 127.0.0.1 8269 bob 2 
 ./vote-tcp 127.0.0.1 8269 bill 2 
+./vote-tcp 127.0.0.1 8269 bill 3 
 
 # Candidate tests
 ./list-candidates-tcp 127.0.0.1 8269
@@ -20,7 +23,7 @@ SERVERPID=$!
 ./vote-count-tcp 127.0.0.1 8269 joe 
 
 # Zeroize tests
-./zeroize-tcp 127.0.0.1 8269
+./vote-zero-tcp 127.0.0.1 8269
 
 echo
 echo Zeroize

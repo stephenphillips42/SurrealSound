@@ -14,9 +14,6 @@
 
 using namespace std;
 
-// Send packet and get response
-string sendPacket(char* argv[], string packet);
-
 int
 main(int argc, char *argv[])
 {
@@ -24,7 +21,6 @@ main(int argc, char *argv[])
     cerr << "Usage: " << argv[0] << " host port..." << endl;
     exit(EXIT_FAILURE);
   }
-  // Input handling
   ClientPacketMaker packetMaker(0);
   string packet = packetMaker.zeroize();
 

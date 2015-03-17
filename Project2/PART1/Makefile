@@ -5,7 +5,7 @@ LDFLAGS=-Wall
 RM=rm -f
 LDLIBS=-lstdc++
 
-all: server-udp add-voter-udp vote-zero-udp vote-udp zeroize-udp list-candidates-udp vote-count-udp 
+all: server-udp add-voter-udp vote-zero-udp vote-udp list-candidates-udp vote-count-udp 
 
 # Testing
 test: test1
@@ -27,9 +27,6 @@ add-voter-udp: add-voter-udp.cpp ../packetmaker.o ../server.o
 
 vote-udp: vote-udp.cpp ../packetmaker.o ../server.o
 	$(CXX) $(LDFLAGS) -o vote-udp vote-udp.cpp ../packetmaker.o ../server.o $(LDLIBS)
-
-zeroize-udp: zeroize-udp.cpp ../packetmaker.o ../server.o
-	$(CXX) $(LDFLAGS) -o zeroize-udp zeroize-udp.cpp ../packetmaker.o ../server.o $(LDLIBS)
 
 list-candidates-udp: list-candidates-udp.cpp ../packetmaker.o ../server.o
 	$(CXX) $(LDFLAGS) -o list-candidates-udp list-candidates-udp.cpp ../packetmaker.o ../server.o $(LDLIBS)
