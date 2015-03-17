@@ -5,5 +5,6 @@ This specifies the package layouts for the UPD/TCP implementations.
 
 
 ACKNOWLEDGEMENT:
-I used Beej's Network Guide as a reference for this code, for mainly the first
-two parts of it, and also the extra credit.
+I used Beej's Network Guide as a reference for this code. I actually mainly used
+the man pages as references, since they have good examples, but I looked at 
+those pages for tips. I also used it a lot for the extra credit portion.
