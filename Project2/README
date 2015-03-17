@@ -1,10 +1,70 @@
 README
 
-This specifies the package layouts for the UPD/TCP implementations.
-
-
-
-ACKNOWLEDGEMENT:
+------------------------------
+Acknowledgements
+------------------------------
 I used Beej's Network Guide as a reference for this code. I actually mainly used
 the man pages as references, since they have good examples, but I looked at 
 those pages for tips. I also used it a lot for the extra credit portion.
+
+------------------------------
+Assumptions
+------------------------------
+The way things are layed out are the same as written in the specs: we have one
+file for each function that the server provides:
+./vote-zero-xxx
+./add-voter-xxx
+./vote-xxx
+./list-candidates-xxx
+./vote-count-xxx
+
+To make all subfolders, run the make.sh script:
+$ bash make.sh
+There is also a clean script, but I don't think you will need it.
+
+The client and server output various messages. An example script is
+given in each subfolder for how it runs. 
+
+------------------------------
+Assumptions
+------------------------------
+I make a few simple assumptions about the types/lengths of the voter IDs and
+the lengths of the candidate names. Namely that the voter IDs are all integers,
+and I don't assume they are positive integers just integers. I assume that the
+candidate names are not too long - like under 400 characters or so. I also
+assume they are words, so that they have no strange symbols or newlines or
+anything like that in them.
+
+------------------------------
+Packet Layouts
+------------------------------
+This specifies the package layouts for the UPD/TCP implementations, which are
+the same in both cases. To make things more readable, I used actual strings
+to send the packages (though this makes error checking more complicated).
+The layout of the packets are as follows:
+Client:
+<PACKET-TYPE> ":" (<ARGUEMENT1> ":" <ARGUEMENT2> ":" ...)
+
+Server:
+<PACKET-TYPE> ":" <ERROR-CODE> (":" <RETURN-VALUES>)
+
+These are also specified in comments in the packetmaker.h file. It is assumed
+that the client packets are small enough to always be sent in one packet,
+which I define as 512 bytes. By the assumptions listed above, this should be
+fine.
+
+------------------------------
+RPC Layout
+------------------------------
+This is all in the rpc_server.x file. It basically contains its own return
+value enum, which wraps the normal server error code enum, as well as a 
+return value stuct in case a function returns data, and a struct for the
+votefor function, since we have to wrap the two arguments in a struct.
+
+------------------------------
+Extra Credit Notes
+------------------------------
+The Extra credit uses basic select() functionality to achieve non-blocking
+I/O. Otherwise, it is identical to the TCP server
+
+

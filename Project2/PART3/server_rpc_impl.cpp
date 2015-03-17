@@ -72,7 +72,7 @@ rpc_votecount_1_svc(char **name, struct svc_req *sreq) {
 	int count = worker.votecount(*name);
 	RPCErrCode ec = RPC_OK;
 	if (count < 0) {
-		ec = RPC_ERROR;
+		ec = RPC_NOTACANDIDATE;
 	}
 	resultstr = SSTR(count);
 	g_retval.errcode = ec;
