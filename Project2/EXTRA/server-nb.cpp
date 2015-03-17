@@ -52,13 +52,13 @@ int main(int argc, char *argv[]) {
   // OK so technically this returns a list - I'll ignore them and just use
   // the first one returned
   // Set up the socket
-  int optval = 1;
   int ssocket = 0; // Server Socket
   if ((ssocket = socket(PF_INET,SOCK_STREAM,0)) < 0) {
     perror("Socket unable to connect");
     exit(EXIT_FAILURE);
   }
   // We get errors if we don't do this - can't bind
+  int optval = 1;
   setsockopt(ssocket, SOL_SOCKET, SO_REUSEADDR,
              &optval, sizeof(optval));
   // Now get IP address and such
