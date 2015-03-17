@@ -190,7 +190,7 @@ string ServerPacketMaker::processpacket(string packet) {
   // Find the first divide, which is always there in well formed packets
   unsigned int divide1 = packet.find(DELIM);
   if (divide1 > packet.size()) {
-    cout << "Can't find -" << endl;
+    cout << "Can't find " << DELIM << endl;
     return sendError(type);
   }
 
