@@ -53,6 +53,13 @@ int main(int argc, char *argv[]) {
     perror("Socket unable to connect");
     exit(EXIT_FAILURE);
   }
+
+  // We get errors if we don't do this - can't bind
+  int optval = 1;
+  setsockopt(ssocket, SOL_SOCKET, SO_REUSEADDR,
+             &optval, sizeof(optval));
+ 
+
   // Now get IP address and such
   if((bind(ssocket, serveraddr->ai_addr, serveraddr->ai_addrlen))<0) {
     perror("Socket unable to bind");

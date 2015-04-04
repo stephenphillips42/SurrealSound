@@ -1,6 +1,6 @@
 #!/bin/bash
 # Start server
-./server-tcp >> servertcp.test &
+./server-tcp &
 SERVERPID=$!
 
 sleep 0.1

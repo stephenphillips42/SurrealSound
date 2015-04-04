@@ -1,0 +1,19 @@
+README for Part 2
+
+As you can tell, this is nearly identical to the UDP implementation, so not
+much has changed. But here it all is again if you need it:
+
+As specified in the top level README, the packets are layed out as follows:
+Client:
+<PACKET-TYPE> ":" (<ARGUEMENT1> ":" <ARGUEMENT2> ":" ...)
+
+Server:
+<PACKET-TYPE> ":" <ERROR-CODE> (":" <RETURN-VALUES>)
+
+Also like in the top level README, the client functions are in separate files.
+Use make to build everything. The file tcp-voting.sh is a sample run file.
+It produces a lot of output, so running the server in a separate terminal
+might be a good idea, or to put its output to /dev/null/ like:
+./server-tcp > /dev/null/ &
+(This replaces the first line)
+

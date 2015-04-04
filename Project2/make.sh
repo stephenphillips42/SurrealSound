@@ -4,3 +4,5 @@ cd ../PART2
 make
 cd ../PART3
 make
+cd ../EXTRA
+make

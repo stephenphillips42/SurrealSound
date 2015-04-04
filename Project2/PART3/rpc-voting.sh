@@ -3,6 +3,8 @@
 ./server-rpc &
 SERVERPID=$!
 
+sleep 0.1
+
 # Add voter tests
 ./add-voter-rpc 127.0.0.1 1 
 ./add-voter-rpc 127.0.0.1 2 
