@@ -32,5 +32,8 @@ Project2/*-udp
 *.x86_64
 *.hex
 
+# Random things
+FinalProject/*
+
 # Emacs
 *~
