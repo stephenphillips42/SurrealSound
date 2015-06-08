@@ -35,5 +35,9 @@ Project2/EXTRA/*-nb
 *.x86_64
 *.hex
 
+# Random things
+FinalProject/*
+Lectures/*
+
 # Emacs
 *~
