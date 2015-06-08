@@ -9,6 +9,7 @@
 #include <iostream>
 
 // Network related things
+#include <net/if.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>

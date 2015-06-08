@@ -5,4 +5,9 @@ mentioned in the top level README. The sample script rpc-voting.sh does the
 same calls as the previous two. There is not as much output, so running it
 all in the same terminal is fine. 
 
+In the script, you can also comment out the local server lines and replace
+the HOSTADDR, variable with the appropriate host address (I haven't tested
+IP addresses directly but they should work the same)
+
+
 The other details are specified in the top level README.
